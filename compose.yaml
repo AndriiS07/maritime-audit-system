@@ -1,0 +1,7 @@
+﻿services:
+  marinetracker.api:
+    image: marinetracker.api
+    build:
+      context: .
+      dockerfile: MarineTracker.Api/Dockerfile
+

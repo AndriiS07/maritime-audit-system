@@ -1,0 +1,6 @@
+@MarineTracker.Api_HostAddress = http://localhost:5144
+
+GET {{MarineTracker.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
