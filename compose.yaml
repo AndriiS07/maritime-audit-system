@@ -1,7 +1,45 @@
-﻿services:
+﻿version: '3.8'
+
+services:
   marinetracker.api:
-    image: marinetracker.api
+    image: marinetrackerapi
     build:
       context: .
       dockerfile: MarineTracker.Api/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - redis
+      - rabbitmq
 
+  # PostgreSQL з PostGIS для геоданих
+  db:
+    image: postgis/postgis:15-3.4
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: supersecretpassword
+      POSTGRES_DB: marine_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # Redis для гарячого кешування позицій
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  # RabbitMQ для черги AIS-повідомлень (з Management UI для зручного моніторингу)
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"   # Порт для коду
+      - "15672:15672" # Порт для адмінки (браузера)
+
+volumes:
+  pgdata:
